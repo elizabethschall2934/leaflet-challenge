@@ -13,21 +13,60 @@
 //Create a legend that will provide context for your map data.
 
 // Store our API endpoint inside queryUrl
-var queryUrl = 
+var queryUrl = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson"
+
+// Initialize an array to hold earthquake markers
+var eqMarkers = [];
+var eqInfo = [];
 
 // Perform a GET request to the query URL
 d3.json(queryUrl, function(data) {
     // Once we get a response, send the data.features object to the createFeatures function
-    createFeatures(data.features);
+    createFeatures(data.features, eqMarkers);
   });
+
+  // Marker size function
+function eqSize(magnitude) {
+  return magnitude * 20000;
+}
+
+// Marker color function
+function eqColor(magnitude) {
+  var circleColor = "#4B0082";
+
+  if (magnitude > 4){
+      circleColor = "#8B008B";
+  } else if (magnitude > 3){
+      circleColor = "	#9932CC";
+  } else if (magnitude > 2){
+      circleColor = "c	#C71585";
+  } else if (magnitude > 1){
+      circleColor = "a	#FF00FF";
+  } else {
+      circleColor = "plum";
+  }
+  return circleColor;
+}
   
-  function createFeatures(earthquakeData) {
+  function createFeatures(earthquakeData, eqMarkers) {
   
     // Define a function we want to run once for each feature in the features array
     // Give each feature a popup describing the place and time of the earthquake
     function onEachFeature(feature, layer) {
       layer.bindPopup("<h3>" + feature.properties.place +
-        "</h3><hr><p>" + new Date(feature.properties.time) + "</p>");
+        "</h3><hr><p>" + new Date(feature.properties.time) + "<hr><p>" + feature.properties.mag +"</p>");
+    }
+
+    eqMarkers.push(
+      L.circle([feature.geometry.coordinates[1],feature.geometry.coordinates[0]], {
+          stroke: true,
+          fillOpacity: 0.8,
+          color: "#4B0082",
+          weight: 1,
+          fillColor: eqColor(feature.properties.mag),
+          radius: eqSize(feature.properties.mag)
+      })
+      );
     }
   
     // Create a GeoJSON layer containing the features array on the earthquakeData object
@@ -35,10 +74,11 @@ d3.json(queryUrl, function(data) {
     var earthquakes = L.geoJSON(earthquakeData, {
       onEachFeature: onEachFeature
     });
+
+    eqInfo = L.layerGroup(eqMarkers);
   
     // Sending our earthquakes layer to the createMap function
     createMap(earthquakes);
-  }
   
   function createMap(earthquakes) {
   
@@ -67,7 +107,8 @@ d3.json(queryUrl, function(data) {
   
     // Create overlay object to hold our overlay layer
     var overlayMaps = {
-      Earthquakes: earthquakes
+      "Earthquakes": eqInfo,
+      "Earthquakes2": earthquakes
     };
   
     // Create our map, giving it the streetmap and earthquakes layers to display on load
@@ -76,7 +117,7 @@ d3.json(queryUrl, function(data) {
         37.09, -95.71
       ],
       zoom: 5,
-      layers: [streetmap, earthquakes]
+      layers: [streetmap, eqInfo]
     });
   
     // Create a layer control
