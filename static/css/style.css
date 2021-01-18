@@ -3,6 +3,16 @@ body {
   margin: 0;
 }
 
+h1 {
+  color: #860cb6;
+  font-family: "Avantgarde", TeX Gyre Adventor, URW Gothic L, sans-serif;
+  }
+
+.legend li{
+  color: #FFFFFF;
+  font-family: "Avantgarde", TeX Gyre Adventor, URW Gothic L, sans-serif;
+  }
+
 #map,
 body,
 html {

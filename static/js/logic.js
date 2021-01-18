@@ -60,7 +60,7 @@ function createFeatures(earthquakeData, eqMarkers) {
     L.circle([feature.geometry.coordinates[1],feature.geometry.coordinates[0]], {
         stroke: true,
         fillOpacity: 0.8,
-        color: "#4B0082",
+        color: "#FFFFFF",
         weight: 1,
         fillColor: eqColor(feature.properties.mag),
         radius: eqSize(feature.properties.mag)
@@ -132,16 +132,16 @@ function createMap(earthquakes) {
     var legend = L.control({ position: "bottomright" });
     legend.onAdd = function() {
         var div = L.DomUtil.create("div", "info legend");
-        var limits = [0,1,2,3,4];
-        var colors = ["DDA0DD", "F00FF", "#C71585", "#9932CC", "8B008B"];
+        // commented lines are for lower # at top of legend, decided I liked it the other way
+        // var limits = [0,1,2,3,4];
+        var limits = [4,3,2,1,0];
+        // var colors = ["#DDA0DD", "#FF00FF", "#C71585", "#9932CC", "#8B008B"];
+        var colors = ["#8B008B", "#9932CC", "#C71585", "#FF00FF", "#DDA0DD"];
         var labels = [];
         
         // Add min & max
         var legendInfo = "<h1>Magnitude Legend</h1>" + 
-        "<div class=\"labels\">" + 
-          "<div class=\"max\">" + (limits.length-1) + "</div>" + 
-          "<div class=\"min\">" + limits[0] + "</div>" + 
-        "</div>";
+        "<div class=\"labels\">" + "</div>";
 
         div.innerHTML = legendInfo;
 
