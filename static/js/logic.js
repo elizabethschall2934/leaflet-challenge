@@ -37,7 +37,7 @@ function eqColor(magnitude) {
     if (magnitude > 4){
         circleColor = "#8B008B";
     } else if (magnitude > 3){
-        circleColor = "	#9932CC";
+        circleColor = "#9932CC";
     } else if (magnitude > 2){
         circleColor = "#C71585";
     } else if (magnitude > 1){
@@ -127,4 +127,33 @@ function createMap(earthquakes) {
   L.control.layers(baseMap, overlayMaps, {
     collapsed: false
   }).addTo(myMap);
+
+// Create legend
+    var legend = L.control({ position: "bottomright" });
+    legend.onAdd = function() {
+        var div = L.DomUtil.create("div", "info legend");
+        var limits = [0,1,2,3,4];
+        var colors = ["DDA0DD", "F00FF", "#C71585", "#9932CC", "8B008B"];
+        var labels = [];
+        
+        // Add min & max
+        var legendInfo = "<h1>Magnitude Legend</h1>" + 
+        "<div class=\"labels\">" + 
+          "<div class=\"max\">" + (limits.length-1) + "</div>" + 
+          "<div class=\"min\">" + limits[0] + "</div>" + 
+        "</div>";
+
+        div.innerHTML = legendInfo;
+
+        limits.forEach(function(limit, index) {
+        labels.push("<li style=\"background-color: " + colors[index] + "\">" + "&nbsp" + limit + "-" + (limit+1) + "</li>");
+        });
+
+        div.innerHTML += "<ul>" + labels.join("") + "</ul>";
+        return div;
+    };
+
+    // Adding legend to the map
+    legend.addTo(myMap);
+
 }
